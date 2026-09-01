@@ -1,0 +1,200 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Resource
+{
+protected:
+    int resourceID;
+    string resourceName;
+    bool available;
+
+public:
+    Resource()
+    {
+        resourceID = 0;
+        resourceName = "";
+        available = true;
+    }
+
+    Resource(int id, string name)
+    {
+        resourceID = id;
+        resourceName = name;
+        available = true;
+    }
+
+    virtual void display() = 0;
+
+    virtual ~Resource()
+    {
+        cout << "\nResource Released";
+    }
+};
+
+class Ambulance : public Resource
+{
+public:
+    Ambulance(int id, string name) : Resource(id, name) {}
+
+    void display()
+    {
+        cout << "\nAmbulance ID : " << resourceID;
+        cout << "\nName : " << resourceName;
+    }
+};
+
+class Bed : public Resource
+{
+public:
+    Bed(int id, string name) : Resource(id, name) {}
+
+    void display()
+    {
+        cout << "\nBed ID : " << resourceID;
+        cout << "\nType : " << resourceName;
+    }
+};
+
+class Patient
+{
+private:
+    int patientID;
+    string patientName;
+    int age;
+    int urgency;
+
+public:
+    Patient()
+    {
+        patientID = 0;
+        patientName = "";
+        age = 0;
+        urgency = 0;
+    }
+
+    Patient(int id, string name, int a, int u)
+    {
+        patientID = id;
+        patientName = name;
+        age = a;
+        urgency = u;
+    }
+
+    void display()
+    {
+        cout << "\nPatient ID : " << patientID;
+        cout << "\nName : " << patientName;
+        cout << "\nAge : " << age;
+        cout << "\nUrgency : " << urgency;
+    }
+
+    int getUrgency()
+    {
+        return urgency;
+    }
+};
+
+class EmergencyCase
+{
+private:
+    int caseID;
+    int priority;
+
+public:
+    static int activeCases;
+
+    EmergencyCase()
+    {
+        caseID = 0;
+        priority = 0;
+    }
+
+    EmergencyCase(int id, int p)
+    {
+        caseID = id;
+        priority = p;
+        activeCases++;
+    }
+
+    EmergencyCase(const EmergencyCase &obj)
+    {
+        caseID = obj.caseID;
+        priority = obj.priority;
+    }
+
+    ~EmergencyCase()
+    {
+        activeCases--;
+    }
+
+    bool operator>(EmergencyCase obj)
+    {
+        return priority > obj.priority;
+    }
+
+    int getPriority()
+    {
+        return priority;
+    }
+};
+
+int EmergencyCase::activeCases = 0;
+
+int main()
+{
+    int choice;
+
+    Patient p1(101, "John", 45, 9);
+
+    EmergencyCase c1(1, 9);
+    EmergencyCase c2(2, 5);
+
+    Ambulance a1(201, "Advanced Ambulance");
+
+    do
+    {
+        cout << "\n\nSMART EMERGENCY MEDICAL RESOURCE SYSTEM";
+        cout << "\n1. Display Patient";
+        cout << "\n2. Display Ambulance";
+        cout << "\n3. Compare Cases";
+        cout << "\n4. Active Cases";
+        cout << "\n5. Exit";
+
+        cout << "\nEnter Choice : ";
+        cin >> choice;
+
+        switch(choice)
+        {
+        case 1:
+            p1.display();
+            break;
+
+        case 2:
+            a1.display();
+            break;
+
+        case 3:
+            if(c1 > c2)
+                cout << "\nCase 1 has Higher Priority";
+            else
+                cout << "\nCase 2 has Higher Priority";
+            break;
+
+        case 4:
+            cout << "\nActive Cases : "
+                 << EmergencyCase::activeCases;
+            break;
+
+        case 5:
+            cout << "\nExiting...";
+            break;
+
+        default:
+            cout << "\nInvalid Choice";
+        }
+
+    } while(choice != 5);
+
+    return 0;
+}
